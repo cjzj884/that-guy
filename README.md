@@ -34,7 +34,7 @@ $ docker run --rm suda/that-guy COMMAND
 Gets history data from the exchange for the specified pair and stores in `data/EXCHANGE/CURRENCY,CURRENCY/TIMESTAMP_FROM-TIMESTAMP_TO.csv` file.
 ```sh
 $ docker run --rm -v ${PWD}:/data suda/that-guy \
-  backfill EXCHANGE --days 7 CURRENCY,CURRENCY
+  backfill <exchange> --days 7 <fsym> <tsym>
 ```
 
 #### Back test
@@ -43,7 +43,7 @@ Runs trading settings against backfilled market data.
 
 ```sh
 $ docker run --rm -v ${PWD}:/data suda/that-guy \
-  backtest EXCHANGE CURRENCY,CURRENCY
+  backtest <exchange> <fsym> <tsym>
 ```
 Takes the same arguments as [Live Trading](#live-trading) except for exchange credentials.
 
@@ -54,12 +54,12 @@ Report will be printed on the `stdout` in a `key: value` format for easier parse
 Runs the current settings against live market. **This actually creates buy/sell orders**.
 ```sh
 $ docker run --rm suda/that-guy \
-  live EXCHANGE --api-key API_KEY --api-secret API_SECRET CURRENCY,CURRENCY
+  live <exchange> --api-key API_KEY --api-secret API_SECRET <fsym> <tsym>
 ```
 
-##### `EXCHANGE` *required*
+##### `<exchange>` *required*
 
-Specify the id of exchange you want That Guy to trade on. Full list](https://github.com/ccxt/ccxt#supported-cryptocurrency-exchange-markets).
+Specify the id of exchange you want That Guy to trade on. You can see the full list using the **exchanges** command.
 
   * `-ak/--api-key`
 
@@ -88,6 +88,14 @@ Start balance of the first currency/cryptocurrency pair.
 ##### `-sbb/--start-balance-b` *required*
 
 Start balance of the second currency/cryptocurrency pair.
+
+##### `<fsym>` *required*
+
+From currency symbol.
+
+##### `<tsym>` *required*
+
+To currency symbol.
 
 ##### `--interval`
 
