@@ -8,7 +8,7 @@ const {startSpinner, info} = require('../ui')
 const {sanitizeArgs} = require('../utils')
 const {getHistoricalPrice} = require('../model')
 
-async function fillDay(exchange, fsym, tsym, timeStart) {
+async function fillDay (exchange, fsym, tsym, timeStart) {
   const data = await getHistoricalPrice(
     exchange,
     fsym,
@@ -47,11 +47,11 @@ module.exports = async (vorpal, args) => {
   await validateExchange(args.exchange)
   await validatePair(args.exchange, args.fsym, args.tsym)
 
-  if (!_.isNumber(args.options.days) && typeof args.options.days != 'undefined') {
+  if (!_.isNumber(args.options.days) && typeof args.options.days !== 'undefined') {
     throw new Error(`"${args.days}" is invalid number of days.`)
   }
 
-  if (typeof args.options.days == 'undefined') {
+  if (typeof args.options.days === 'undefined') {
     args.options.days = 6
   } else if (args.options.days > 6) {
     throw new Error(`You can only fetch 6 days back.`)
@@ -64,7 +64,7 @@ module.exports = async (vorpal, args) => {
   const spinner = startSpinner('Loading data...')
 
   try {
-    for (let i=args.options.days; i>0; i--) {
+    for (let i = args.options.days; i > 0; i--) {
       spinner.info(`  Filling ${timeStart.format('YYYY MMM DD')}`).start()
       await fillDay(args.exchange, args.fsym, args.tsym, timeStart)
       timeStart.add(1, 'day')

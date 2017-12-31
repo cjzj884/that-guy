@@ -1,6 +1,3 @@
-const ccxt = require('ccxt')
-const cc = require('cryptocompare')
-const _ = require('lodash')
 const chalk = require('chalk')
 
 const {startSpinner} = require('./ui')
@@ -12,7 +9,7 @@ const validators = {
     const exchanges = await listExchanges()
     spinner.stop()
 
-    if (exchanges.indexOf(exchange) == -1) {
+    if (exchanges.indexOf(exchange) === -1) {
       throw new Error(`Unsupported "${exchange}" exchange. ` +
         `To list supported ones use ${chalk.bold('exchanges')} command.`)
     }
@@ -21,7 +18,7 @@ const validators = {
   validatePair: async (exchange, fsym, tsym) => {
     const spinner = startSpinner('Getting pair price...')
     try {
-      const price = await getPairPrice(exchange, fsym, tsym)
+      await getPairPrice(exchange, fsym, tsym)
     } catch (e) {
       throw new Error(`${exchange} exchange doesn't support ${fsym}/${tsym} pair. ` +
         `To list supported ones use ${chalk.bold('pairs')} command.`)
