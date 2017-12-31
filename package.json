@@ -1,6 +1,6 @@
 {
   "name": "that-guy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Genetic cryptocurrency trading bot",
   "bin": {
     "that-guy": "./src/cli.js"
