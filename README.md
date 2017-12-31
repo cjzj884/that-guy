@@ -1,6 +1,10 @@
 # 👈🏻 That Guy (AKA Steve Castle)
 
+[![npm](https://img.shields.io/npm/v/that-guy.svg)]() [![npm](https://img.shields.io/npm/l/that-guy.svg)]() [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 ##### Genetic cryptocurrency trading bot
+
+Supports **45 crypto exchanges** (see `exchanges` command), **20 technical indicators** and genetic config generation.
 
 ![](images/that-guy.jpg)
 
@@ -87,14 +91,6 @@ Specify the id of exchange you want That Guy to trade on. You can see the full l
 
   Exchange password.
 
-##### `-sba/--start-balance-a` *required*
-
-Start balance of the first currency/cryptocurrency pair.
-
-##### `-sbb/--start-balance-b` *required*
-
-Start balance of the second currency/cryptocurrency pair.
-
 ##### `<fsym>` *required*
 
 From currency symbol.
@@ -103,9 +99,17 @@ From currency symbol.
 
 To currency symbol.
 
+##### `-fstart, --from-start-balance`
+
+Start balance of the first currency/cryptocurrency pair. Defaults to whole balance for this symbol.
+
+##### `-tstart, --to-start-balance`
+
+Start balance of the second currency/cryptocurrency pair. Defaults to whole balance for this symbol.
+
 ##### `--interval`
 
-Specify how often pull market data. **Default: 15m**.
+Specify how often to make decisions. **Default: 15m**.
 
 ##### `-sl/--stop-loss`
 
