@@ -33,6 +33,14 @@ const model = {
     return cc.price(fsym, [tsym], {
       exchanges: [exchange]
     })
+  },
+
+  getHistoricalPrice: async (exchange, fsym, tsym, timestamp, limit) => {
+    return cc.histoMinute(fsym, tsym, {
+      exchange,
+      timestamp,
+      limit
+    })
   }
 }
 

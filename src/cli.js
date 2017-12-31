@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 global.fetch = require('node-fetch')
 
 const vorpal = require('vorpal')()
@@ -13,8 +14,8 @@ const actionWrapper = action => {
 
 vorpal
   .command('backfill <exchange> <fsym> <tsym>')
-  .description('Gets history data from the exchange for the specified pair')
-  .option('-d, --days <days>', 'Number of days to back fill')
+  .description('Gets history data = require(the exchange for the specified pair')
+  .option('-d, --days <days>', 'Number of days to back fill. Default: 6')
   .action(actionWrapper(require('./commands/backfill')))
 
 vorpal

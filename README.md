@@ -27,9 +27,7 @@ Quickest way is to use Docker (first you need to [install it for your operating 
 $ docker run --rm suda/that-guy COMMAND
 ```
 
-### Options
-
-#### Backfill
+### `backfill`
 
 Gets history data from the exchange for the specified pair and stores in `data/EXCHANGE/CURRENCY,CURRENCY/TIMESTAMP_FROM-TIMESTAMP_TO.csv` file.
 ```sh
@@ -37,7 +35,13 @@ $ docker run --rm -v ${PWD}:/data suda/that-guy \
   backfill <exchange> --days 7 <fsym> <tsym>
 ```
 
-#### Back test
+#### Options
+
+##### `--days`
+
+Number of days to back fill. **Default: 7**.
+
+### `backtest`
 
 Runs trading settings against backfilled market data.
 
@@ -49,13 +53,15 @@ Takes the same arguments as [Live Trading](#live-trading) except for exchange cr
 
 Report will be printed on the `stdout` in a `key: value` format for easier parseability.
 
-#### Live Trading
+### `live`
 
 Runs the current settings against live market. **This actually creates buy/sell orders**.
 ```sh
 $ docker run --rm suda/that-guy \
   live <exchange> --api-key API_KEY --api-secret API_SECRET <fsym> <tsym>
 ```
+
+#### Options
 
 ##### `<exchange>` *required*
 
@@ -136,17 +142,15 @@ indicators:
 
 [List of available indicators](https://github.com/anandanand84/technicalindicators#available-indicators).
 
-#### Other options
+### `exchanges`
 
-##### `-lp/--list-pairs`
+Lists all supported exchanges.
 
-List available pairs for the selected exchange.
+### `pairs <exchange>`
 
-##### `-c/--config`
+List pairs supported by exchange.
 
-YAML config file path.
-
-#### Passing options
+### Passing options
 
 All options can be specified in one of the three ways:
 
