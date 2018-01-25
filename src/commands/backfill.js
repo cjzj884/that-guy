@@ -59,15 +59,16 @@ module.exports = async (vorpal, args) => {
 
   vorpal.log(info(`Back filling ${args.options.days} days...\n`))
 
-  let timeStart = moment().subtract(args.options.days - 1, 'days')
-  timeStart.hour(0).minute(0).second(0).millisecond(0)
+  let timeEnd = moment().subtract(args.options.days - 1, 'days')
+  timeEnd.hour(0).minute(0).second(0).millisecond(0)
   const spinner = startSpinner('Loading data...')
 
   try {
     for (let i = args.options.days; i > 0; i--) {
-      spinner.info(`  Filling ${timeStart.format('YYYY MMM DD')}`).start()
-      await fillDay(args.exchange, args.fsym, args.tsym, timeStart)
-      timeStart.add(1, 'day')
+      spinner.info(`Saving ${timeEnd.subtract(1, 'day').format('YYYY MMM DD')}`).start()
+      timeEnd.add(1, 'day')
+      await fillDay(args.exchange, args.fsym, args.tsym, timeEnd)
+      timeEnd.add(1, 'day')
     }
   } catch (e) {
     spinner.stop()

@@ -43,7 +43,7 @@ $ docker run --rm -v ${PWD}:/data suda/that-guy \
 
 ##### `--days`
 
-Number of days to back fill. **Default: 7**.
+Number of days to back fill. **Default: 6**.
 
 ### `backtest`
 
@@ -71,23 +71,23 @@ $ docker run --rm suda/that-guy \
 
 Specify the id of exchange you want That Guy to trade on. You can see the full list using the **exchanges** command.
 
-  * `-ak/--api-key`
+  * `-k, --api-key`
 
   Exchange API key.
 
-  * `-as/--api-secret`
+  * `-s, --api-secret`
 
   Exchange API secret.
 
-  * `-u/--uid`
+  * `-u, --uid`
 
   Exchange UID.
 
-  * `-l/--login`
+  * `-l, --login`
 
   Exchange login.
 
-  * `-p/--password`
+  * `-p, --password`
 
   Exchange password.
 
@@ -99,27 +99,27 @@ From currency symbol.
 
 To currency symbol.
 
-##### `-fstart, --from-start-balance`
+##### `-f, --from-start-balance`
 
 Start balance of the first currency/cryptocurrency pair. Defaults to whole balance for this symbol.
 
-##### `-tstart, --to-start-balance`
+##### `-t, --to-start-balance`
 
 Start balance of the second currency/cryptocurrency pair. Defaults to whole balance for this symbol.
 
-##### `--interval`
+##### `-i, --interval`
 
 Specify how often to make decisions. **Default: 15m**.
 
-##### `-sl/--stop-loss`
+##### `-o, --stop-loss`
 
 Loss percentage at which to sell. **Default: 50**.
 
-##### `-tp/--take-profit`
+##### `-r, --take-profit`
 
 Profit percentage at which to sell. **Default: 50**.
 
-##### `-ef/--exchange-fees`
+##### `-e, --exchange-fees`
 
 Percentage of exchange fees. **Default: 0.25**.
 
