@@ -15,10 +15,15 @@ const indicators = {
     let results = []
 
     const applyIndicator = (indicator, additionalInput, buyCallback, sellCallback) => {
-      accumulator = indicators._accumulator()
+      // Default arguments
+      if (!additionalInput) additionalInput = {}
+      if (!buyCallback) buyCallback = val => val >= 0
+      if (!sellCallback) sellCallback = val => val < 0
 
+      accumulator = indicators._accumulator()
+      // TODO: validate params
       let inputString = Object.keys(additionalInput)
-        .filter(param => !['values'].includes(param))
+        .filter(param => !['values', 'SimpleMAOscillator', 'SimpleMASignal'].includes(param))
         .map(param => `${param}: ${additionalInput[param]}`)
         .join(', ')
       logger.log(info(`Applying ${indicator}... ${inputString}`))
@@ -37,10 +42,7 @@ const indicators = {
 
     if (options['adl']) {
       applyIndicator(
-        'ADL',
-        {},
-        val => val >=0,
-        val => val < 0
+        'ADL'
       )
     }
 
@@ -87,9 +89,46 @@ const indicators = {
     if (options['fi-period']) {
       applyIndicator(
         'ForceIndex',
-        {period: options['fi-period']},
-        val => val >= 0,
-        val => val < 0
+        {period: options['fi-period']}
+      )
+    }
+
+    if (options['fi-period']) {
+      applyIndicator(
+        'ForceIndex',
+        {period: options['fi-period']}
+      )
+    }
+
+    if (options['kst-period']) {
+      applyIndicator(
+        'KST',
+        {
+          signalPeriod: options['kst-period'],
+          ROCPer1: options['kst-rocper1'],
+          ROCPer2: options['kst-rocper2'],
+          ROCPer3: options['kst-rocper3'],
+          ROCPer4: options['kst-rocper4'],
+          SMAROCPer1: options['kst-smrocper1'],
+          SMAROCPer2: options['kst-smrocper2'],
+          SMAROCPer3: options['kst-smrocper3'],
+          SMAROCPer4: options['kst-smrocper4'],
+          values: close,
+        }
+      )
+    }
+
+    if (options['macd-fast-period']) {
+      applyIndicator(
+        'MACD',
+        {
+          fastPeriod: options['macd-fast-period'],
+          slowPeriod: options['macd-slow-period'],
+          signalPeriod: options['macd-signal-period'],
+          values: close,
+          SimpleMAOscillator: false,
+          SimpleMASignal: false
+        }
       )
     }
 
