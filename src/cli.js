@@ -5,6 +5,8 @@ const vorpal = require('vorpal')()
 const {error} = require('./ui')
 const {sanitizeArgs} = require('./utils')
 
+global.vorpal = vorpal
+
 function actionWrapper (action) {
   return async (args) => {
     return action(vorpal, args).catch(exception => {

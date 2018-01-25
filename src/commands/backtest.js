@@ -1,14 +1,14 @@
 const {validateExchange, validatePair} = require('../validators')
-const {startSpinner, info, success, error, Logger} = require('../ui')
+const {startSpinner, info, success, error} = require('../ui')
 const {sanitizeArgs} = require('../utils')
 const {getBackPriceRawData, extractBackPriceFromRaw} = require('../model')
-const {decide} = require('../indicators');
+const {decide} = require('../indicators')
+const logger = require('../logger')()
 
 module.exports = async (vorpal, args) => {
   if (args.options.yaml) {
     global.silent = true
   }
-  const logger = Logger(vorpal)
   let output = {}
   args = sanitizeArgs(args)
   // await validateExchange(args.exchange)

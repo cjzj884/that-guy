@@ -15,17 +15,7 @@ const ui = {
   error: chalk.red,
   warning: chalk.yellow,
   info: chalk.blue,
-  success: chalk.green,
-
-  Logger: vorpal => {
-    if (global.silent) {
-      return {
-        log: () => {}
-      }
-    } else {
-      return vorpal
-    }
-  }
+  success: chalk.green
 }
 
 module.exports = ui
