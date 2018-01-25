@@ -93,13 +93,6 @@ const indicators = {
       )
     }
 
-    if (options['fi-period']) {
-      applyIndicator(
-        'ForceIndex',
-        {period: options['fi-period']}
-      )
-    }
-
     if (options['kst-period']) {
       applyIndicator(
         'KST',
@@ -129,6 +122,166 @@ const indicators = {
           SimpleMAOscillator: false,
           SimpleMASignal: false
         }
+      )
+    }
+
+    if (options['obv']) {
+      applyIndicator(
+        'OBV'
+      )
+    }
+
+    if (options['psar-steps']) {
+      applyIndicator(
+        'PSAR',
+        {
+          step: options['psar-steps'],
+          max: options['psar-max']
+        },
+        (val, idx) => val >= close[idx],
+        (val, idx) => val < close[idx]
+      )
+    }
+
+    if (options['roc-period']) {
+      applyIndicator(
+        'ROC',
+        {
+          period: options['roc-period'],
+          values: close
+        }
+      )
+    }
+
+    if (options['rsi-period']) {
+      applyIndicator(
+        'RSI',
+        {
+          period: options['rsi-period'],
+          values: close
+        },
+        val => val <= 30,
+        val => val >= 70
+      )
+    }
+
+    if (options['sma-short-period']) {
+      accumulator = indicators._accumulator()
+      logger.log(info(`Applying SMA... shortPeriod: ${options['sma-short-period']}, longPeriod: ${options['sma-long-period']}`))
+
+      const shortResults = technicalIndicators.SMA.calculate({
+        period: options['sma-short-period'],
+        values: close
+      })
+      const longResults = technicalIndicators.SMA.calculate({
+        period: options['sma-long-period'],
+        values: close
+      })
+
+      let indicatorResults = _.zip(shortResults, longResults)
+        .map(results => {
+          const short = results[0]
+          const long = results[1]
+
+          return indicators._buySellOrHold(
+            accumulator,
+            short && long && short >= long,
+            short && long && short < long
+          )
+        })
+      results.push(indicators._fillLeft(indicatorResults, close))
+    }
+
+    if (options['kd-period']) {
+      applyIndicator(
+        'Stochastic',
+        {
+          period: options['kd-period'],
+          signalPeriod: options['kd-signal-period']
+        },
+        val => val.d >= val.k,
+        val => val.d < val.k
+      )
+    }
+
+    if (options['trix-period']) {
+      applyIndicator(
+        'TRIX',
+        {
+          period: options['trix-period'],
+          values: close
+        }
+      )
+    }
+
+    if (options['vwap']) {
+      applyIndicator(
+        'VWAP',
+        {},
+        (val, idx) => val >= close[idx],
+        (val, idx) => val < close[idx]
+      )
+    }
+
+    if (options['ema-short-period']) {
+      accumulator = indicators._accumulator()
+      logger.log(info(`Applying EMA... shortPeriod: ${options['ema-short-period']}, longPeriod: ${options['ema-long-period']}`))
+
+      const shortResults = technicalIndicators.EMA.calculate({
+        period: options['ema-short-period'],
+        values: close
+      })
+      const longResults = technicalIndicators.EMA.calculate({
+        period: options['ema-long-period'],
+        values: close
+      })
+
+      let indicatorResults = _.zip(shortResults, longResults)
+        .map(results => {
+          const short = results[0]
+          const long = results[1]
+
+          return indicators._buySellOrHold(
+            accumulator,
+            short && long && short >= long,
+            short && long && short < long
+          )
+        })
+      results.push(indicators._fillLeft(indicatorResults, close))
+    }
+
+    if (options['wma-period']) {
+      applyIndicator(
+        'WMA',
+        {
+          period: options['wma-period'],
+          values: close
+        },
+        (val, idx) => val >= close[idx],
+        (val, idx) => val < close[idx]
+      )
+    }
+
+    if (options['wema-period']) {
+      applyIndicator(
+        'WEMA',
+        {
+          period: options['wema-period'],
+          values: close
+        },
+        (val, idx) => val >= close[idx],
+        (val, idx) => val < close[idx]
+      )
+    }
+
+    if (options['wpr-period']) {
+      applyIndicator(
+        'WilliamsR',
+        {
+          period: options['wpr-period']
+        },
+        val => val >= 20,
+        val => val < 20
       )
     }
 
