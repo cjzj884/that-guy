@@ -1,4 +1,4 @@
-const {ADL, ADX, ATR, BollingerBands, CCI} = require('technicalindicators')
+const technicalIndicators = require('technicalindicators')
 const _ = require('lodash')
 const logger = require('./logger')()
 const {info} = require('./ui')
@@ -14,85 +14,83 @@ const indicators = {
     let accumulator
     let results = []
 
-    if (options['adl']) {
-      logger.log(info('Applying ADL...'))
+    const applyIndicator = (indicator, additionalInput, buyCallback, sellCallback) => {
       accumulator = indicators._accumulator()
-      results.push(
-        ADL.calculate(input).map(val => {
-          return indicators._buySellOrHold(
-            accumulator,
-            val >=0,
-            val < 0
-          )
-        })
+
+      let inputString = Object.keys(additionalInput)
+        .filter(param => !['values'].includes(param))
+        .map(param => `${param}: ${additionalInput[param]}`)
+        .join(', ')
+      logger.log(info(`Applying ${indicator}... ${inputString}`))
+
+      let indicatorInput = Object.assign(additionalInput, input)
+      let indicatorResults = technicalIndicators[indicator].calculate(indicatorInput)
+      indicatorResults = indicators._fillLeft(indicatorResults, close).map((val, idx) => {
+        return indicators._buySellOrHold(
+          accumulator,
+          val && buyCallback(val, idx),
+          val && sellCallback(val, idx)
+        )
+      })
+      results.push(indicatorResults)
+    }
+
+    if (options['adl']) {
+      applyIndicator(
+        'ADL',
+        {},
+        val => val >=0,
+        val => val < 0
       )
     }
 
     if (options['adx-period']) {
-      accumulator = indicators._accumulator()
-      let adxInput = input
-      adxInput.period = options['adx-period']
-      logger.log(info(`Applying ADX... (period: ${adxInput.period})`))
-      let adxResults =
-        ADX.calculate(adxInput).map(val => {
-          return indicators._buySellOrHold(
-            accumulator,
-            val['mdi'] >= val['pdi'],
-            val['mdi'] < val['pdi']
-          )
-        })
-      results.push(indicators._fillLeft(adxResults, close))
+      applyIndicator(
+        'ADX',
+        {period: options['adx-period']},
+        val => val['mdi'] >= val['pdi'],
+        val => val['mdi'] < val['pdi']
+      )
     }
 
     if (options['atr-period']) {
-      accumulator = indicators._accumulator()
-      let atrInput = input
-      atrInput.period = options['atr-period']
-      logger.log(info(`Applying ATR... (period: ${atrInput.period})`))
-      let atrResults = ATR.calculate(atrInput)
-      atrResults = indicators._fillLeft(atrResults, close).map((val, idx) => {
-        return indicators._buySellOrHold(
-          accumulator,
-          val && val >= close[idx],
-          val && val < close[idx]
-        )
-      })
-      results.push(atrResults)
+      applyIndicator(
+        'ATR',
+        {period: options['atr-period']},
+        (val, idx) => val >= close[idx],
+        (val, idx) => val < close[idx]
+      )
     }
 
     if (options['bb-period']) {
-      accumulator = indicators._accumulator()
-      let bbInput = {
-        period: options['bb-period'],
-        stdDev: options['bb-stddev'],
-        values: close
-      }
-      logger.log(info(`Applying BB... (period: ${bbInput.period}, stddev: ${bbInput.stdDev})`))
-      let bbResults = BollingerBands.calculate(bbInput)
-      bbResults = indicators._fillLeft(bbResults, close).map((val, idx) => {
-        return indicators._buySellOrHold(
-          accumulator,
-          val && val.upper > close[idx],
-          val && val.lower < close[idx]
-        )
-      })
-      results.push(bbResults)
+      applyIndicator(
+        'BollingerBands',
+        {
+          period: options['bb-period'],
+          stdDev: options['bb-stddev'],
+          values: close
+        },
+        (val, idx) => val.upper > close[idx],
+        (val, idx) => val.lower < close[idx]
+      )
     }
 
     if (options['cci-period']) {
-      accumulator = indicators._accumulator()
-      let cciInput = input
-      cciInput.period = options['cci-period']
-      logger.log(info(`Applying CCI... (period: ${cciInput.period})`))
-      let cciResults = CCI.calculate(cciInput)
-      cciResults = indicators._fillLeft(cciResults, close).map((val, idx) => {
-        return indicators._buySellOrHold(
-          accumulator,
-          val >= 100,
-          val < -100
-        )
-      })
-      results.push(cciResults)
+      applyIndicator(
+        'CCI',
+        {period: options['cci-period']},
+        val => val >= 100,
+        val => val < -100
+      )
+    }
+
+    if (options['fi-period']) {
+      applyIndicator(
+        'ForceIndex',
+        {period: options['fi-period']},
+        val => val >= 0,
+        val => val < 0
+      )
     }
 
     return indicators._reduceResults(results)
