@@ -9,6 +9,7 @@ const {sanitizeArgs} = require('../utils')
 const {getHistoricalPrice} = require('../model')
 
 async function fillDay (exchange, fsym, tsym, timeStart) {
+  const fileDate = moment(timeStart).subtract(1, 'day')
   const data = await getHistoricalPrice(
     exchange,
     fsym,
@@ -21,9 +22,9 @@ async function fillDay (exchange, fsym, tsym, timeStart) {
     'data',
     exchange,
     `${fsym}-${tsym}`,
-    timeStart.format('YYYY'),
-    timeStart.format('MMM'),
-    `${timeStart.format('DD') - 1}.csv`
+    fileDate.format('YYYY'),
+    fileDate.format('MMM'),
+    `${fileDate.format('DD')}.csv`
   )
   fs.ensureDirSync(path.dirname(filename))
   fs.writeFileSync(filename, `time,timestamp,open,close,high,low,volumefrom,volumeto\n`)
