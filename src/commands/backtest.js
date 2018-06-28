@@ -82,8 +82,9 @@ module.exports = async (vorpal, args) => {
   } else {
     logger.log(error(`Loss: ${diff} (${diffPercent}%)`))
   }
+  output.gain = diffPercent
 
   if (args.options.yaml) {
-    yaml.safeDump(output)
+    console.log(yaml.safeDump(output))
   }
 }

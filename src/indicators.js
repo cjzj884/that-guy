@@ -26,6 +26,7 @@ const indicators = {
         .filter(param => !['values', 'SimpleMAOscillator', 'SimpleMASignal'].includes(param))
         .map(param => `${param}: ${additionalInput[param]}`)
         .join(', ')
+
       logger.log(info(`Applying ${indicator}... ${inputString}`))
 
       let indicatorInput = Object.assign(additionalInput, input)
@@ -284,6 +285,8 @@ const indicators = {
         val => val < 20
       )
     }
+
+    logger.log()
 
     return indicators._reduceResults(results)
   },
