@@ -1,3 +1,6 @@
+const chalk = require('chalk')
+const yaml = require('js-yaml')
+const pad = require('pad-left')
 const {validateExchange, validatePair} = require('../validators')
 const {startSpinner, info, success, error} = require('../ui')
 const {sanitizeArgs} = require('../utils')
@@ -27,6 +30,7 @@ module.exports = async (vorpal, args) => {
   output.interval = args.options.interval
   output.dataPointsLength = dataPoints.length
   logger.log(info(`...with interval of ${output.interval} minutes it's ${output.dataPointsLength} data points...`))
+  logger.log()
 
   const result = decide(dataPoints, args.options)
 
@@ -42,12 +46,15 @@ module.exports = async (vorpal, args) => {
       const amount = fromBalance * dataPoints[i].close
       toBalance += amount
       fromBalance -= amount / dataPoints[i].close
-      logger.log(`✅  ${amount} @ ${dataPoints[i].close}. New balance: ${fromBalance} : ${toBalance}`)
+      logger.log(success(`BUY  ${pad(amount.toFixed(2), 10)} ${chalk.bold('@')} ${pad(dataPoints[i].close, 8)}`
+        + ` | Balance: ${fromBalance.toFixed(2)}${chalk.bold(args.fsym)} ${toBalance.toFixed(2)}${chalk.bold(args.tsym)}`))
     } else if (item == 'SELL') {
       const amount = toBalance / dataPoints[i].close
-      toBalance -= amount * dataPoints[i].close
+      const toAmount = amount * dataPoints[i].close
+      toBalance -= toAmount
       fromBalance += amount
-      logger.log(`❌  ${amount} @ ${dataPoints[i].close}. New balance: ${fromBalance} : ${toBalance}`)
+      logger.log(error(`SELL ${pad(amount.toFixed(2), 10)} ${chalk.bold('@')} ${pad(dataPoints[i].close, 8)}`
+        + ` | Balance: ${fromBalance.toFixed(2)}${chalk.bold(args.fsym)} ${toBalance.toFixed(2)}${chalk.bold(args.tsym)}`))
     }
   })
 
@@ -69,15 +76,14 @@ module.exports = async (vorpal, args) => {
   logger.log()
 
   const diff = fromBalance - output.startBalance[args.fsym];
-  const diffPercent = diff / output.startBalance[args.fsym]
+  const diffPercent = diff / output.startBalance[args.fsym] * 100
   if (diff > 0) {
-    logger.log(success(`+${diff} (${diffPercent}%)`))
+    logger.log(success(`Gain: +${diff} (${diffPercent}%)`))
   } else {
-    logger.log(error(`-${diff} (${diffPercent}%)`))
+    logger.log(error(`Loss: ${diff} (${diffPercent}%)`))
   }
 
-  // TODO: Make YAML not JSON
   if (args.options.yaml) {
-    console.log(JSON.stringify(output, '', 2))
+    yaml.safeDump(output)
   }
 }
